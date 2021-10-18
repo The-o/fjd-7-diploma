@@ -1,0 +1,22 @@
+FROM alpine/git as checkout
+
+WORKDIR /app
+
+RUN git clone https://github.com/netology-code/jd-homeworks.git .
+
+FROM node:14 as build
+
+WORKDIR /app
+COPY --from=checkout /app/diploma/netology-diplom-frontend ./
+
+RUN npm install
+
+ARG BACKEND_URL
+RUN echo "VUE_APP_BASE_URL=$BACKEND_URL" > .env
+
+RUN npm run build
+
+FROM nginx
+WORKDIR /usr/share/nginx/html
+
+COPY --from=build /app/dist .
