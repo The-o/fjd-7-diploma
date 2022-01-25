@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,11 +17,14 @@ import ru.netology.service.exception.FileNotFoundException;
 @Service
 public class FileService {
 
-    @Autowired
     private FileRepository fileRepository;
 
-    @Autowired
     private FileStorageService fileStorage;
+
+    public FileService(FileRepository fileRepository, FileStorageService fileStorage) {
+        this.fileRepository = fileRepository;
+        this.fileStorage = fileStorage;
+    }
 
     public List<File> getUserFileList(User user, Integer limit) {
         PageRequest pageRequest = null;

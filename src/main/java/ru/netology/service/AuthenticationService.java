@@ -1,6 +1,5 @@
 package ru.netology.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -13,19 +12,26 @@ import ru.netology.service.exception.UserNotFoundException;
 
 @Service
 public class AuthenticationService {
-    
-    @Autowired
+
     private UserRepository userRepository;
 
-    @Autowired
     private SessionRepository sessionRepository;
 
-    @Autowired
     private PasswordEncoder passwordEncoder;
+
+    public AuthenticationService(
+        UserRepository userRepository,
+        SessionRepository sessionRepository,
+        PasswordEncoder passwordEncoder
+    ) {
+        this.userRepository = userRepository;
+        this.sessionRepository = sessionRepository;
+        this.passwordEncoder = passwordEncoder;
+    }
 
     public Session createSession(String login, String password, String ip) {
         User user = userRepository.findByLogin(login);
-        
+
         if (user == null || password == null || !passwordEncoder.matches(password, user.getPassword())) {
             throw new UserNotFoundException();
         }
